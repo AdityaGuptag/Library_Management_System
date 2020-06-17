@@ -1,22 +1,13 @@
 
 package LMS;
 
-
-// Including Header Files.
 import java.io.*;
 import java.text.SimpleDateFormat;
-//import java.sql.Connection;
-//import java.sql.DriverManager;
-//import java.sql.PreparedStatement;
-//import java.sql.ResultSet;
-//import java.sql.SQLException;
-//import java.sql.SQLIntegrityConstraintViolationException;
-//import java.sql.Statement;
-//import java.sql.Types;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -209,11 +200,6 @@ public class Library {
 		booksInLibrary.add(b);
 	}
 
-	//When this function is called, only the pointer of the book placed in booksInLibrary is removed. But the real object of book
-	//is still there in memory because pointers of that book placed in IssuedBooks and ReturnedBooks are still pointing to that book. And we
-	//are maintaining those pointers so that we can maintain history.
-	//But if we donot want to maintain history then we can delete those pointers placed in IssuedBooks and ReturnedBooks as well which are
-	//pointing to that book. In this way the book will be really removed from memory.
 	public void removeBookfromLibrary(Book b)  
 	{
 		boolean delete = true;
@@ -550,6 +536,7 @@ public class Library {
 
 		for (int i = 0; i < persons.size(); i++)
 		{
+			System.out.println("Password is: " + persons.get(i).getPassword());
 			if (persons.get(i).getID() == id && persons.get(i).getPassword().equals(password))
 			{
 				System.out.println("\nLogin Successful");
@@ -600,25 +587,7 @@ public class Library {
 	}
 
 	//---------------------------------------------------------------------------------------//
-	/*--------------------------------IN- COLLABORATION WITH DATA BASE------------------------------------------*/
-
-	// Making Connection With Database    
-	/*public Connection makeConnection()
-    {        
-        try
-        {
-            String host = "jdbc:derby://localhost:1527/LMS";
-            String uName = "haris";
-            String uPass= "123";
-            Connection con = DriverManager.getConnection( host, uName, uPass );
-            return con;
-        }
-        catch ( SQLException err ) 
-        {
-            System.out.println( err.getMessage( ) );
-            return null;
-        }   
-    }*/
+	/*--------------------------------IN - COLLABORATION WITH DATA BASE------------------------------------------*/
 
 
 	// Loading all info in code via Database.
@@ -656,7 +625,6 @@ public class Library {
 
 				if (maxID < id)
 					maxID = id;
-				//        			System.out.println(i + " : " + jo.get("AUTHOR"));
 			}
 
 			// setting Book Count
@@ -671,14 +639,14 @@ public class Library {
 
 		String[] reqColumns = new String[] {"PNAME", "ADDRESS", "PASSWORD", "PHONE_NO", "SALARY", "DESK_NO"};
 		File[] files = new File[] {clerksFile, personFile, staffFile};
-		JSONObject jObj = extractInfo(files, reqColumns);
+		JSONObject jObj = extractInfo(3, files, reqColumns);
 		Set<Integer> ids = jObj.keySet();
 		Iterator<Integer> it = ids.iterator();
 
 		while(it.hasNext()) 
 		{
 			Object ID = it.next();
-			JSONObject jo = (JSONObject) jObj.get(ID);
+			LinkedHashMap jo = (LinkedHashMap) jObj.get(ID);
 			String cname = (String) jo.get("PNAME");
 			String adrs = (String) jo.get("ADDRESS"); 
 			int phn = Integer.parseInt(jo.get("PHONE_NO").toString());
@@ -702,14 +670,14 @@ public class Library {
 		}
 		else
 		{
-			jObj = extractInfo(files, reqColumns);
+			jObj = extractInfo(3, files, reqColumns);
 			ids = jObj.keySet();
 			it = ids.iterator();
 
 			while(it.hasNext()) 
 			{
 				Object ID = it.next();
-				JSONObject jo = (JSONObject) jObj.get(ID);
+				LinkedHashMap jo = (LinkedHashMap) jObj.get(ID);
 				String lname = (String) jo.get("PNAME");
 				String adrs = (String) jo.get("ADDRESS"); 
 				int phn = Integer.parseInt(jo.get("PHONE_NO").toString());
@@ -729,25 +697,26 @@ public class Library {
 		reqColumns = new String[] {"PNAME", "ADDRESS", "PASSWORD", "PHONE_NO"};
 
 
+
 		if (borrowerFile.length() == 0)
 		{
 			System.out.println("No borrower found!");
 		}
 		else
 		{
-			jObj = extractInfo(files, reqColumns);
+			jObj = extractInfo(2, files, reqColumns);
 			ids = jObj.keySet();
 			it = ids.iterator();
 
 			while(it.hasNext()) 
 			{
 				Object ID = it.next();
-				JSONObject jo = (JSONObject) jObj.get(ID);
+				LinkedHashMap jo = (LinkedHashMap) jObj.get(ID);
 				String lname = (String) jo.get("PNAME");
 				String adrs = (String) jo.get("ADDRESS"); 
 				int phn = Integer.parseInt(jo.get("PHONE_NO").toString());
 				int id = Integer.parseInt(ID.toString());
-				Borrower b= new Borrower(id,name,adrs,phn);
+				Borrower b= new Borrower(id, name, adrs, phn);
 				addBorrower(b);                             
 			}
 
@@ -765,7 +734,6 @@ public class Library {
 		{
 			jObj = (JSONObject) new JSONParser().parse(new FileReader(booksFile));
 			ids = jObj.keySet();
-			System.out.println(ids);
 			it = ids.iterator();
 
 			while(it.hasNext())
@@ -773,7 +741,7 @@ public class Library {
 
 				Object ID = it.next();
 				JSONObject jo = (JSONObject) jObj.get(ID);
-
+				System.out.println("Printing... " + jo.get("BORROWER").toString());
 				int borid = Integer.parseInt(jo.get("BORROWER").toString());
 				int bokid = Integer.parseInt(jo.get("BOOK").toString());
 				int iid = Integer.parseInt(jo.get("ISSUER").toString());
@@ -926,57 +894,17 @@ public class Library {
 
 		/* --- Populating Borrower's Remaining Info----*/
 
-		// Borrowed Books
-		//		SQL="SELECT ID,BOOK FROM PERSON INNER JOIN BORROWER ON ID=B_ID INNER JOIN BORROWED_BOOK ON B_ID=BORROWER ";
-		//
-		//		rs=stmt.executeQuery(SQL);
-		//		
-		////		JSONObject mergedPerson
-		//
-		//		if(!rs.next())
-		//		{
-		//			System.out.println("No Borrower has borrowed yet from Library"); 
-		//		}
-		//		else
-		//		{
-		//
-		//			do
-		//			{
-		//				int id=rs.getInt("ID");      // borrower
-		//				int bid=rs.getInt("BOOK");   // book
-		//
-		//				Borrower bb=null;
-		//				boolean set=true;
-		//				boolean okay=true;
-		//
-		//				for(int i=0;i<lib.getPersons().size() && set;i++)
-		//				{
-		//					if(lib.getPersons().get(i).getClass().getSimpleName().equals("Borrower"))
-		//					{
-		//						if(lib.getPersons().get(i).getID()==id)
-		//						{
-		//							set =false;
-		//							bb=(Borrower)(lib.getPersons().get(i));
-		//						}
-		//					}
-		//				}
-		//
-		//				set=true;
-		//
-		//				ArrayList<Loan> books = loans;
-		//
-		//				for(int i=0;i<books.size() && set;i++)
-		//				{
-		//					if(books.get(i).getBook().getID()==bid &&books.get(i).getReceiver()==null )
-		//					{
-		//						set=false;   
-		//						Loan bBook= new Loan(bb,books.get(i).getBook(),books.get(i).getIssuer(),null,books.get(i).getIssuedDate(),null,books.get(i).getFineStatus());
-		//						bb.addBorrowedBook(bBook);
-		//					}
-		//				}
-		//
-		//			}while(rs.next());               
-		//		}
+		for (int i = 0; i < loans.size(); i++) {
+			int b_id = loans.get(i).getBorrower().getID();			//Borrower's ID
+			if (loans.get(i).getReceiver() == null) {
+				for (int j = 0; j < persons.size(); j++) {
+					if (persons.get(j).getID() == b_id) {
+						loans.get(i).getBorrower().addBorrowedBook(loans.get(i));
+					}
+				}
+			}
+		}
+
 
 		ArrayList<Person> persons = lib.getPersons();
 
@@ -1038,7 +966,7 @@ public class Library {
 		pw.close();
 
 		JSONObject librarianJson = new JSONObject();
-		if(lib.getLibrarian()!=null)    // if  librarian is there
+		if(lib.getLibrarian() != null)    // if  librarian is there
 		{	
 			Map<String, String> m = new LinkedHashMap<String, String>();
 			staffJson.put(lib.getLibrarian().getID(), m);
@@ -1060,7 +988,7 @@ public class Library {
 		{
 			if (lib.getPersons().get(i).getClass().getSimpleName().equals("Borrower"))
 			{
-				borrowerJson.put(i+100, lib.getPersons().get(i).getID());   
+				borrowerJson.put(lib.getPersons().get(i).getID(), "BORROWER");   
 			}
 		}
 		pw = new PrintWriter("borrower.json");
@@ -1073,9 +1001,6 @@ public class Library {
 		JSONObject booksJson = new JSONObject();
 		for(int i=0;i<books.size();i++)
 		{
-			//			template = "INSERT INTO LIBRARY.BOOK (ID,TITLE,AUTHOR,SUBJECT,IS_ISSUED) values (?,?,?,?,?)";
-			//			PreparedStatement stmt = con.prepareStatement(template);
-
 			Map<String, String> m = new LinkedHashMap<String, String>();
 			booksJson.put(books.get(i).getID(), m);
 			m.put("TITLE", books.get(i).getTitle());
@@ -1091,8 +1016,6 @@ public class Library {
 		JSONObject loanBookJson = new JSONObject();
 		for(int i = 0; i < loans.size(); i++)
 		{
-			//			template = "INSERT INTO LIBRARY.LOAN(L_ID,BORROWER,BOOK,ISSUER,ISS_DATE,RECEIVER,RET_DATE,FINE_PAID) values (?,?,?,?,?,?,?,?)";
-			//			PreparedStatement stmt = con.prepareStatement(template);
 
 			Map<String, String> m = new LinkedHashMap<String, String>();
 			loanBookJson.put(i+1, m);
@@ -1111,8 +1034,6 @@ public class Library {
 			{
 				m.put("RECEIVER", null);
 				m.put("RET_DATE", null);
-				//				stmt.setNull(6,Types.INTEGER); 
-				//				stmt.setDate(7,null);
 			}
 			else
 			{
@@ -1125,7 +1046,7 @@ public class Library {
 		pw.write(loanBookJson.toJSONString());
 		pw.close();
 
-		/* Filling On_Hold_ Table*/
+		/* Filling On_Hold_Table*/
 
 		int x=1;
 		JSONObject onHoldJson = new JSONObject();
@@ -1149,50 +1070,16 @@ public class Library {
 		pw.write(onHoldJson.toJSONString());
 		pw.close();
 
-		/* Filling Borrowed Book Table*/
-		JSONObject borrowedBookJson = new JSONObject();
-		ArrayList<Integer> borrowedBooks = new ArrayList<Integer>();
-		ArrayList<Integer> borrowerId = new ArrayList<Integer>();
-		borrowedBookJson.put("BOOK", borrowedBooks);
-		borrowedBookJson.put("BORROWER", borrowerId);
-		for(int i=0;i<lib.getBooks().size();i++)
-		{
-			if(lib.getBooks().get(i).getIssuedStatus()==true)
-			{
-				boolean set=true;
-				for(int j=0;j<loans.size() && set ;j++)
-				{
-					if(lib.getBooks().get(i).getID()==loans.get(j).getBook().getID())
-					{
-						if(loans.get(j).getReceiver()==null)
-						{
-							borrowedBooks.add(loans.get(j).getBook().getID());
-							borrowerId.add(loans.get(j).getBorrower().getID());
-							set=false;
-						}
-					}
-
-				}
-
-			}
-		} 
-		pw = new PrintWriter("borrowedBooks.json");
-		pw.write(borrowedBookJson.toJSONString());
-		pw.close();
-
 	} // Filling Done!  
 
 
-	// Joining the data from different data files. 
 
-
-
-
+	// Joining the data from different data files.
 	// The first file in the files array should be the one with which others should match.
-	private static JSONObject extractInfo(File[] files, String[] reqCols) throws FileNotFoundException, IOException, ParseException {
+	private static JSONObject extractInfo(int noOfFiles, File[] files, String... reqCols) throws FileNotFoundException, IOException, ParseException {
 		JSONObject finalObj = new JSONObject();
 
-		int noOfFiles = files.length;
+		//		int noOfFiles = files.length;
 		JSONObject[] jObjs = new JSONObject[noOfFiles];
 		for (int i = 0; i < noOfFiles; i++) 
 		{

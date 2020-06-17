@@ -1,0 +1,74 @@
+BOOK JSON ->
+
+{
+book_id_num1:{'TITLE':'', 'AUTHOR':'', 'SUBJECT':'', 'IS_ISSUED':''},
+book_id_num2:{'TITLE':'', 'AUTHOR':'', 'SUBJECT':'', 'IS_ISSUED':''},
+book_id_num3:{'TITLE':'', 'AUTHOR':'', 'SUBJECT':'', 'IS_ISSUED':''}
+}
+
+PERSON SCHEMA -> 
+
+{
+ID1:{"PNAME":'', "PASSWORD":'', "ADDRESS":'', "PHONE_NO":''}
+ID2:{"PNAME":'', "PASSWORD":'', "ADDRESS":'', "PHONE_NO":''}
+}
+
+STAFF SCHEMA -> 
+
+{
+S_ID1:{"TYPE":"", "SALARY":""},
+S_ID2:{"TYPE":"", "SALARY":""}
+}
+
+
+CLERK SCHEMA ->
+
+{
+C_ID1:DESK_NO1,
+C_ID2:DESK_NO2
+}
+
+BORROWER SCHEMA ->
+
+{
+"B_ID":[]
+}
+
+LIBRARIAN SCHEMA ->
+
+{
+L_ID:OFFICE_NO
+}
+
+LOAN SCHEMA ->
+
+{
+L_ID:{
+		"BORROWER":BORROWER_ID,
+		"BOOK":BOOK_ID,
+		"ISSUER":ISSUER_ID,
+		"ISS_DATE":DATE OF ISSUE,
+		"RECEIVER":RECEIVER ID IF BOOK WAS RETURNED,
+		"RET_DATE":DATE WHEN THE BOOK WAS RETURNED,
+		"FINE_PAID": IF FINE WAS PAID
+	 },
+	 .
+	 .
+	 .
+	 
+}
+
+
+ON_HOLD SCHEMA ->
+
+{
+"REQ_ID":{"BOOK_ID":"", "BORROWER_ID":"", "REQ_DATE":""},
+.
+.
+.
+}
+
+
+
+
+
