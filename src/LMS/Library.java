@@ -732,7 +732,7 @@ public class Library {
 		}
 		else
 		{
-			jObj = (JSONObject) new JSONParser().parse(new FileReader(booksFile));
+			jObj = (JSONObject) new JSONParser().parse(new FileReader(loanFile));
 			ids = jObj.keySet();
 			it = ids.iterator();
 
@@ -741,11 +741,13 @@ public class Library {
 
 				Object ID = it.next();
 				JSONObject jo = (JSONObject) jObj.get(ID);
-				System.out.println("Printing... " + jo.get("BORROWER").toString());
+//				System.out.println("Printing... " + jo.get("BORROWER").toString());
 				int borid = Integer.parseInt(jo.get("BORROWER").toString());
 				int bokid = Integer.parseInt(jo.get("BOOK").toString());
 				int iid = Integer.parseInt(jo.get("ISSUER").toString());
-				Integer rid = Integer.parseInt(jo.get("RECEIVER").toString());
+				Integer rid;
+				if (jo.get("RECEIVER") == null) {rid = null;}
+				else rid = Integer.parseInt(jo.get("RECEIVER").toString());
 				int rd=0;
 				Date rdate;
 				String issueDate = jo.get("ISS_DATE").toString();
@@ -779,7 +781,9 @@ public class Library {
 					}
 				}
 
-				String returnDate = jo.get("RET_DATE").toString();
+				String returnDate;
+				if (jo.get("RET_DATE") == null) { returnDate = null; }
+				else { returnDate = jo.get("RET_DATE").toString(); }
 				// Checks if book is returned or not
 				if(rid != null)    // if there is a receiver 
 				{
