@@ -1,1 +1,18 @@
-{"1":{"TYPE":"Clerk","SALARY":"20000.0"},"2":{"TYPE":"Librarian","SALARY":"70000.0"},"7":{"TYPE":"Clerk","SALARY":"20000.0"},"11":{"TYPE":"Clerk","SALARY":"9.87654321E9"}}
+{
+  "1": {
+    "TYPE": "Clerk",
+    "SALARY": "20000.0"
+  },
+  "2": {
+    "TYPE": "Librarian",
+    "SALARY": "70000.0"
+  },
+  "7": {
+    "TYPE": "Clerk",
+    "SALARY": "20000.0"
+  },
+  "11": {
+    "TYPE": "Clerk",
+    "SALARY": "9.87654321E9"
+  }
+}
