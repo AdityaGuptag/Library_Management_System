@@ -1,11 +1,1 @@
-{
-  "1": {
-    "BORROWER": "5",
-    "BOOK": "3",
-    "ISSUER": "2",
-    "ISS_DATE": "18-06-2020",
-    "FINE_PAID": "false",
-    "RECEIVER": null,
-    "RET_DATE": null
-  }
-}
+{"1":{"BORROWER":"3","BOOK":"1","ISSUER":"1","ISS_DATE":"19-06-2020","FINE_PAID":"false","RECEIVER":null,"RET_DATE":null}}

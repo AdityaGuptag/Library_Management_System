@@ -29,13 +29,14 @@ public class Main
 
 			if((!choice.matches(".*[a-zA-Z]+.*")) && (Integer.parseInt(choice) > min && Integer.parseInt(choice) < max))
 			{
+//				input.close();
 				return Integer.parseInt(choice);
 			}
 
 			else
 				System.out.println("\nInvalid Input.");
 		}
-
+		
 	}
 
 	// Functionalities of all Persons
@@ -253,6 +254,7 @@ public class Main
 		// Functionality Performed.
 		System.out.println("\nPress any key to continue..\n");
 		scanner.next();
+//		scanner.close();
 	}
 
 
@@ -455,11 +457,12 @@ public class Main
 			System.out.println("\nPress any key to continue..\n");
 			Scanner scanner = new Scanner(System.in);
 			scanner.next();
+//			scanner.close();
 		}
 
 		//Loading back all the records in database
 		lib.fillItBack();
-
+//		admin.close();
 
 	}    // Main Closed
 

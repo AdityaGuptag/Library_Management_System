@@ -42,10 +42,10 @@ public class Library {
     {
         name = null;
         librarian = null;
-        persons = new ArrayList();
+        persons = new ArrayList<>();
 
-        booksInLibrary = new ArrayList();
-        loans = new ArrayList();
+        booksInLibrary = new ArrayList<>();
+        loans = new ArrayList<>();
     }
 
 
@@ -257,7 +257,7 @@ public class Library {
             author = reader.readLine();
         }
 
-        ArrayList<Book> matchedBooks = new ArrayList();
+        ArrayList<Book> matchedBooks = new ArrayList<>();
 
         //Retrieving all the books which matched the user's search query
         for (int i = 0; i < booksInLibrary.size(); i++) {
@@ -535,6 +535,7 @@ public class Library {
         String[] reqColumns = new String[]{"PNAME", "ADDRESS", "PASSWORD", "PHONE_NO", "SALARY", "DESK_NO"};
         File[] files = new File[]{clerksFile, personFile, staffFile};
         JSONObject jObj = extractInfo(files, reqColumns);
+        
         Set<Integer> ids = jObj.keySet();
         Iterator<Integer> it = ids.iterator();
 
@@ -601,8 +602,9 @@ public class Library {
                 String adrs = (String) jo.get("ADDRESS");
                 int phn = Integer.parseInt(jo.get("PHONE_NO").toString());
                 int id = Integer.parseInt(ID.toString());
-                Borrower b = new Borrower(id, name, adrs, phn);
-                addBorrower(b);
+                Borrower b = new Borrower(id, lname, adrs, phn);
+//                System.out.println(b);
+                this.addBorrower(b);
             }
 
         }
@@ -614,7 +616,7 @@ public class Library {
         if (loanFile.length() == 0) {
             System.out.println("No books issued yet!");
         } else {
-            jObj = (JSONObject) new JSONParser().parse(new FileReader(booksFile));
+            jObj = (JSONObject) new JSONParser().parse(new FileReader(loanFile));
             ids = jObj.keySet();
             it = ids.iterator();
 
@@ -622,11 +624,13 @@ public class Library {
 
                 Object ID = it.next();
                 JSONObject jo = (JSONObject) jObj.get(ID);
-                System.out.println("Printing... " + jo.get("BORROWER").toString());
+//                System.out.println("Printing... " + jo.get("BORROWER").toString());
                 int borid = Integer.parseInt(jo.get("BORROWER").toString());
                 int bokid = Integer.parseInt(jo.get("BOOK").toString());
                 int iid = Integer.parseInt(jo.get("ISSUER").toString());
-                Integer rid = Integer.parseInt(jo.get("RECEIVER").toString());
+                Integer rid;
+                if (jo.get("RECEIVER") == null) { rid = null; }
+                else { rid = Integer.parseInt(jo.get("RECEIVER").toString()); }
                 int rd = 0;
                 Date rdate;
                 String issueDate = jo.get("ISS_DATE").toString();
@@ -653,8 +657,9 @@ public class Library {
                         }
                     }
                 }
-
-                String returnDate = jo.get("RET_DATE").toString();
+                String returnDate;
+                if (jo.get("RET_DATE") == null) { returnDate = null; }
+                else {returnDate = jo.get("RET_DATE").toString(); }
                 // Checks if book is returned or not
                 if (rid != null)    // if there is a receiver
                 {
@@ -678,11 +683,14 @@ public class Library {
                     s[1] = null;  // no receiver
                     rdate = null;
                 }
+                
+                set = true;
 
                 // Creates the borrower object
                 for (int i = 0; i < getPersons().size() && set; i++) {
                     if (getPersons().get(i).getID() == borid) {
                         set = false;
+//                        System.out.println("ENTERED HERE!!");
                         bb = (Borrower) (getPersons().get(i));
                     }
                 }
@@ -695,7 +703,8 @@ public class Library {
                     if (books.get(k).getID() == bokid) {
                         set = false;
                         Loan l = new Loan(bb, books.get(k), s[0], s[1], idate, rdate, fineStatus);
-                        loans.add(l);
+//                        loans.add(l);
+                        this.addLoan(l);
                     }
                 }
             }
@@ -711,7 +720,7 @@ public class Library {
         } else {
             jObj = (JSONObject) new JSONParser().parse(new FileReader(holdRequestFile));
             ids = jObj.keySet();
-            System.out.println(ids);
+//            System.out.println(ids);
             it = ids.iterator();
 
             while (it.hasNext()) {
@@ -753,6 +762,8 @@ public class Library {
         /* --- Populating Borrower's Remaining Info----*/
 
         for (int i = 0; i < loans.size(); i++) {
+        	System.out.println("i: " + i + " " + loans.get(i).getBorrower());
+        	
             int b_id = loans.get(i).getBorrower().getID();            //Borrower's ID
             if (loans.get(i).getReceiver() == null) {
                 for (int j = 0; j < persons.size(); j++) {

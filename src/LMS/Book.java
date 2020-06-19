@@ -115,7 +115,7 @@ public class Book {
             title = reader.readLine();
         }
 
-        scanner.close();
+//        scanner.close();
         System.out.println("\nBook is successfully updated.");
 
     }
@@ -235,7 +235,7 @@ public class Book {
             if (choice.equals("y")) {
                 makeHoldRequest(borrower);
             }
-            sc.close();
+//            sc.close();
         } else {
             if (!holdRequests.isEmpty()) {
                 boolean hasRequest = false;
@@ -267,7 +267,7 @@ public class Book {
                         makeHoldRequest(borrower);
                     }
 
-                    sc.close();
+//                    sc.close();
                     return;
                 }
             }

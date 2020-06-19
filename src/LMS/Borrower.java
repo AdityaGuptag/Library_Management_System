@@ -114,7 +114,7 @@ public class Borrower extends Person
 			System.out.println("\nThe phone number is successfully updated.");
 		}
 
-		sc.close();
+//		sc.close();
 		System.out.println("\nBorrower is successfully updated.");
 
 	}

@@ -137,7 +137,7 @@ public class Loan
 			if(choice.equals("n") || choice.equals("N"))
 				finePaid = false;
 			
-			input.close();
+//			input.close();
 		}
 		else
 		{
