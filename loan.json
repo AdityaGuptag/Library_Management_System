@@ -1,1 +1,1 @@
-{"1":{"BORROWER":"3","BOOK":"1","ISSUER":"1","ISS_DATE":"19-06-2020","FINE_PAID":"false","RECEIVER":null,"RET_DATE":null}}
+{"1":{"BORROWER":"3","BOOK":"1","ISSUER":"1","ISS_DATE":"19-06-2020","FINE_PAID":"false","RECEIVER":null,"RET_DATE":null},"2":{"BORROWER":"3","BOOK":"4","ISSUER":"2","ISS_DATE":"20-06-2020","FINE_PAID":"true","RECEIVER":"2","RET_DATE":"20-06-2020"},"3":{"BORROWER":"14","BOOK":"4","ISSUER":"2","ISS_DATE":"20-06-2020","FINE_PAID":"false","RECEIVER":null,"RET_DATE":null}}
