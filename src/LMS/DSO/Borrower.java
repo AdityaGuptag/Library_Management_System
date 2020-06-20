@@ -1,8 +1,10 @@
 
-package LMS;
+package LMS.DSO;
 
 import java.io.*;
 import java.util.*;
+
+import LMS.Services.*;
 
 public class Borrower extends Person 
 {    

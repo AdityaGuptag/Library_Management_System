@@ -1,9 +1,11 @@
 // constructor overload isIssued
-package LMS;
+package LMS.DSO;
 
 import java.io.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+
+import LMS.Services.*;
 
 public class Book {
 

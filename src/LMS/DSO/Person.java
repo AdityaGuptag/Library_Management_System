@@ -1,6 +1,6 @@
 // address ko vararg
 // constructor m overload w/o add phoneno
-package LMS;
+package LMS.DSO;
 
 public abstract class Person {
     protected int id;           // ID of every person related to library

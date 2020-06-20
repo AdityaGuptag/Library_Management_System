@@ -1,10 +1,13 @@
 
-package LMS;
+package LMS.Controller;
 
 // Including Header Files.
 import java.io.*;
 import java.text.ParseException;
 import java.util.*;
+
+import LMS.DSO.*;
+import LMS.Services.*;
 
 public class Main 
 {

@@ -1,6 +1,9 @@
-package LMS;
+package LMS.Services;
 
 import java.util.Date;
+
+import LMS.DSO.Book;
+import LMS.DSO.Borrower;
 
 public class HoldRequest {
 

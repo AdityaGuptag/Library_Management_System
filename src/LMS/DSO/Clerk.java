@@ -1,5 +1,5 @@
 
-package LMS;
+package LMS.DSO;
 
 public class Clerk extends Staff {
 

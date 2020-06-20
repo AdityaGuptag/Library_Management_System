@@ -1,9 +1,11 @@
 
-package LMS;
+package LMS.Services;
 
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Scanner;
+
+import LMS.DSO.*;
 
 public class Loan 
 {
