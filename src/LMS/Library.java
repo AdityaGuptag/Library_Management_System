@@ -1,5 +1,4 @@
-// vararg method  extractINFO 1079
-// fillItBack nested class static public
+
 package LMS;
 import java.io.*;
 import org.json.simple.JSONObject;
@@ -7,8 +6,6 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.text.SimpleDateFormat;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.*;
 
 public class Library {
@@ -132,7 +129,7 @@ public class Library {
         try {
             id = scanner.nextInt();
         } catch (java.util.InputMismatchException e) {
-            System.out.println("\nInvalid Input");
+            System.out.println("\nInvalid Input: " + e.toString());
         }
 
         for (int i = 0; i < persons.size(); i++) {
@@ -154,7 +151,7 @@ public class Library {
         try {
             id = scanner.nextInt();
         } catch (java.util.InputMismatchException e) {
-            System.out.println("\nInvalid Input");
+            System.out.println("\nInvalid Input: " + e.toString());
         }
 
         for (int i = 0; i < persons.size(); i++) {
@@ -349,14 +346,14 @@ public class Library {
         try {
             n = reader.readLine();
         } catch (IOException ex) {
-            Logger.getLogger(Library.class.getName()).log(Level.SEVERE, null, ex);
+        	ex.printStackTrace();
         }
         System.out.println("Enter Address: ");
         String address = "";
         try {
             address = reader.readLine();
         } catch (IOException ex) {
-            Logger.getLogger(Library.class.getName()).log(Level.SEVERE, null, ex);
+        	ex.printStackTrace();
         }
 
         int phone = 0;
@@ -365,7 +362,7 @@ public class Library {
             System.out.println("Enter Phone Number: ");
             phone = sc.nextInt();
         } catch (java.util.InputMismatchException e) {
-            System.out.println("\nInvalid Input.");
+            System.out.println("\nInvalid Input: " + e.toString());
         }
 
         //If clerk is to be created
@@ -376,7 +373,7 @@ public class Library {
                 System.out.println("Enter Salary: ");
                 salary = sc.nextDouble();
             } catch (java.util.InputMismatchException e) {
-                System.out.println("\nInvalid Input.");
+                System.out.println("\nInvalid Input: " + e.toString());
             }
 
             Clerk c = new Clerk(-1, n, address, phone, salary, -1);
@@ -394,7 +391,7 @@ public class Library {
                 System.out.println("Enter Salary: ");
                 salary = sc.nextDouble();
             } catch (java.util.InputMismatchException e) {
-                System.out.println("\nInvalid Input.");
+                System.out.println("\nInvalid Input: " + e.toString());
             }
 
             Librarian l = new Librarian(-1, n, address, phone, salary, -1);
@@ -438,14 +435,13 @@ public class Library {
         try {
             id = input.nextInt();
         } catch (java.util.InputMismatchException e) {
-            System.out.println("\nInvalid Input");
+            System.out.println("\nInvalid Input: " + e.toString());
         }
 
         System.out.println("Enter Password: ");
         password = input.next();
 
         for (int i = 0; i < persons.size(); i++) {
-            System.out.println("Password is: " + persons.get(i).getPassword());
             if (persons.get(i).getID() == id && persons.get(i).getPassword().equals(password)) {
                 System.out.println("\nLogin Successful");
                 return persons.get(i);
@@ -787,146 +783,8 @@ public class Library {
 
         Person.setIDCount(max);
     }
-
-    //filling data into database
-    @SuppressWarnings("unchecked")
-    public void fillItBack() throws FileNotFoundException {
-        Library lib = this;
-
-        /* Filling Person's Table*/
-        JSONObject finalObj = new JSONObject();
-        for (int i = 0; i < lib.getPersons().size(); i++) {
-            Map<String, String> m = new LinkedHashMap<String, String>();
-            m.put("PNAME", lib.getPersons().get(i).getName());
-            m.put("PASSWORD", lib.getPersons().get(i).getPassword());
-            m.put("ADDRESS", lib.getPersons().get(i).getAddress());
-            m.put("PHONE_NO", Integer.toString(lib.getPersons().get(i).getPhoneNumber()));
-
-            finalObj.put(lib.getPersons().get(i).getID(), m);
-
-        }
-        PrintWriter pw = new PrintWriter("people.json");
-        pw.write(finalObj.toJSONString());
-        pw.close();
-        System.out.println("People db populated!");
-
-        /* Filling Clerk's Table and Staff Table*/
-        JSONObject staffJson = new JSONObject();
-        JSONObject clerkJson = new JSONObject();
-        for (int i = 0; i < lib.getPersons().size(); i++) {
-            if (lib.getPersons().get(i).getClass().getSimpleName().equals("Clerk")) {
-                Map<String, String> m = new LinkedHashMap<String, String>();
-                staffJson.put(lib.getPersons().get(i).getID(), m);
-                m.put("TYPE", "Clerk");
-                m.put("SALARY", Double.toString(((Clerk) (lib.getPersons().get(i))).getSalary()));
-
-                clerkJson.put(lib.getPersons().get(i).getID(), ((Clerk) (lib.getPersons().get(i))).deskNo);
-            }
-
-        }
-        pw = new PrintWriter("clerks.json");
-        pw.write(clerkJson.toJSONString());
-        pw.close();
-
-        JSONObject librarianJson = new JSONObject();
-        if (lib.getLibrarian() != null)    // if  librarian is there
-        {
-            Map<String, String> m = new LinkedHashMap<String, String>();
-            staffJson.put(lib.getLibrarian().getID(), m);
-            m.put("TYPE", "Librarian");
-            m.put("SALARY", Double.toString(lib.getLibrarian().getSalary()));
-
-            librarianJson.put(lib.getLibrarian().getID(), lib.getLibrarian().officeNo);
-        }
-        pw = new PrintWriter("librarian.json");
-        pw.write(librarianJson.toJSONString());
-        pw.close();
-        pw = new PrintWriter("staff.json");
-        pw.write(staffJson.toJSONString());
-        pw.close();
-
-        /* Filling Borrower's Table*/
-        JSONObject borrowerJson = new JSONObject();
-        for (int i = 0; i < lib.getPersons().size(); i++) {
-            if (lib.getPersons().get(i).getClass().getSimpleName().equals("Borrower")) {
-                borrowerJson.put(lib.getPersons().get(i).getID(), "BORROWER");
-            }
-        }
-        pw = new PrintWriter("borrower.json");
-        pw.write(borrowerJson.toJSONString());
-        pw.close();
-
-        ArrayList<Book> books = lib.getBooks();
-
-        /*Filling Book's Table*/
-        JSONObject booksJson = new JSONObject();
-        for (int i = 0; i < books.size(); i++) {
-            Map<String, String> m = new LinkedHashMap<String, String>();
-            booksJson.put(books.get(i).getID(), m);
-            m.put("TITLE", books.get(i).getTitle());
-            m.put("AUTHOR", books.get(i).getAuthor());
-            m.put("SUBJECT", books.get(i).getSubject());
-            m.put("IS_ISSUED", Boolean.toString(books.get(i).getIssuedStatus()));
-        }
-        pw = new PrintWriter("books.json");
-        pw.write(booksJson.toJSONString());
-        pw.close();
-
-        /* Filling Loan Book's Table*/
-        JSONObject loanBookJson = new JSONObject();
-        for (int i = 0; i < loans.size(); i++) {
-
-            Map<String, String> m = new LinkedHashMap<String, String>();
-            loanBookJson.put(i + 1, m);
-            m.put("BORROWER", Integer.toString(loans.get(i).getBorrower().getID()));
-            m.put("BOOK", Integer.toString(loans.get(i).getBook().getID()));
-            m.put("ISSUER", Integer.toString(loans.get(i).getIssuer().getID()));
-
-            SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-
-            String issueDt = df.format(loans.get(i).getIssuedDate());
-            m.put("ISS_DATE", issueDt);
-
-            m.put("FINE_PAID", Boolean.toString(loans.get(i).getFineStatus()));
-
-            if (loans.get(i).getReceiver() == null) {
-                m.put("RECEIVER", null);
-                m.put("RET_DATE", null);
-            } else {
-                m.put("RECEIVER", Integer.toString(loans.get(i).getReceiver().getID()));
-                String retDt = df.format(loans.get(i).getReturnDate());
-                m.put("RET_DATE", retDt);
-            }
-        }
-        pw = new PrintWriter("loan.json");
-        pw.write(loanBookJson.toJSONString());
-        pw.close();
-
-        /* Filling On_Hold_Table*/
-
-        int x = 1;
-        JSONObject onHoldJson = new JSONObject();
-        for (int i = 0; i < lib.getBooks().size(); i++) {
-            for (int j = 0; j < lib.getBooks().get(i).getHoldRequests().size(); j++) {
-                Map<String, String> m = new LinkedHashMap<String, String>();
-                onHoldJson.put(x, m);
-                m.put("BOOK", Integer.toString(lib.getBooks().get(i).getHoldRequests().get(j).getBook().getID()));
-                m.put("BORROWER", Integer.toString(lib.getBooks().get(i).getHoldRequests().get(j).getBorrower().getID()));
-
-                SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-                String reqDt = df.format(lib.getBooks().get(i).getHoldRequests().get(j).getRequestDate());
-                m.put("REQ_DATE", reqDt);
-
-                x++;
-            }
-        }
-        pw = new PrintWriter("onHoldBooks.json");
-        pw.write(onHoldJson.toJSONString());
-        pw.close();
-
-    } // Filling Done!
-
-
+    
+    
     private static JSONObject extractInfo(File[] files, String... reqCols) throws FileNotFoundException, IOException, ParseException {
 		int noOfFiles = files.length;
 		return extractInfo(noOfFiles, files, reqCols);
@@ -972,4 +830,143 @@ public class Library {
         return finalObj;
     }
 
+    //filling data into database
+//    @SuppressWarnings("unchecked")
+    public class PopulateDB {
+	    public void fillItBack() throws FileNotFoundException {
+	        Library lib = Library.getInstance();
+	
+	        /* Filling Person's Table*/
+	        JSONObject finalObj = new JSONObject();
+	        for (int i = 0; i < lib.getPersons().size(); i++) {
+	            Map<String, String> m = new LinkedHashMap<String, String>();
+	            m.put("PNAME", lib.getPersons().get(i).getName());
+	            m.put("PASSWORD", lib.getPersons().get(i).getPassword());
+	            m.put("ADDRESS", lib.getPersons().get(i).getAddress());
+	            m.put("PHONE_NO", Integer.toString(lib.getPersons().get(i).getPhoneNumber()));
+	
+	            finalObj.put(lib.getPersons().get(i).getID(), m);
+	
+	        }
+	        PrintWriter pw = new PrintWriter("people.json");
+	        pw.write(finalObj.toJSONString());
+	        pw.close();
+	        System.out.println("People db populated!");
+	
+	        /* Filling Clerk's Table and Staff Table*/
+	        JSONObject staffJson = new JSONObject();
+	        JSONObject clerkJson = new JSONObject();
+	        for (int i = 0; i < lib.getPersons().size(); i++) {
+	            if (lib.getPersons().get(i).getClass().getSimpleName().equals("Clerk")) {
+	                Map<String, String> m = new LinkedHashMap<String, String>();
+	                staffJson.put(lib.getPersons().get(i).getID(), m);
+	                m.put("TYPE", "Clerk");
+	                m.put("SALARY", Double.toString(((Clerk) (lib.getPersons().get(i))).getSalary()));
+	
+	                clerkJson.put(lib.getPersons().get(i).getID(), ((Clerk) (lib.getPersons().get(i))).deskNo);
+	            }
+	
+	        }
+	        pw = new PrintWriter("clerks.json");
+	        pw.write(clerkJson.toJSONString());
+	        pw.close();
+	
+	        JSONObject librarianJson = new JSONObject();
+	        if (lib.getLibrarian() != null)    // if  librarian is there
+	        {
+	            Map<String, String> m = new LinkedHashMap<String, String>();
+	            staffJson.put(lib.getLibrarian().getID(), m);
+	            m.put("TYPE", "Librarian");
+	            m.put("SALARY", Double.toString(lib.getLibrarian().getSalary()));
+	
+	            librarianJson.put(lib.getLibrarian().getID(), lib.getLibrarian().officeNo);
+	        }
+	        pw = new PrintWriter("librarian.json");
+	        pw.write(librarianJson.toJSONString());
+	        pw.close();
+	        pw = new PrintWriter("staff.json");
+	        pw.write(staffJson.toJSONString());
+	        pw.close();
+	
+	        /* Filling Borrower's Table*/
+	        JSONObject borrowerJson = new JSONObject();
+	        for (int i = 0; i < lib.getPersons().size(); i++) {
+	            if (lib.getPersons().get(i).getClass().getSimpleName().equals("Borrower")) {
+	                borrowerJson.put(lib.getPersons().get(i).getID(), "BORROWER");
+	            }
+	        }
+	        pw = new PrintWriter("borrower.json");
+	        pw.write(borrowerJson.toJSONString());
+	        pw.close();
+	
+	        ArrayList<Book> books = lib.getBooks();
+	
+	        /*Filling Book's Table*/
+	        JSONObject booksJson = new JSONObject();
+	        for (int i = 0; i < books.size(); i++) {
+	            Map<String, String> m = new LinkedHashMap<String, String>();
+	            booksJson.put(books.get(i).getID(), m);
+	            m.put("TITLE", books.get(i).getTitle());
+	            m.put("AUTHOR", books.get(i).getAuthor());
+	            m.put("SUBJECT", books.get(i).getSubject());
+	            m.put("IS_ISSUED", Boolean.toString(books.get(i).getIssuedStatus()));
+	        }
+	        pw = new PrintWriter("books.json");
+	        pw.write(booksJson.toJSONString());
+	        pw.close();
+	
+	        /* Filling Loan Book's Table*/
+	        JSONObject loanBookJson = new JSONObject();
+	        for (int i = 0; i < loans.size(); i++) {
+	
+	            Map<String, String> m = new LinkedHashMap<String, String>();
+	            loanBookJson.put(i + 1, m);
+	            m.put("BORROWER", Integer.toString(loans.get(i).getBorrower().getID()));
+	            m.put("BOOK", Integer.toString(loans.get(i).getBook().getID()));
+	            m.put("ISSUER", Integer.toString(loans.get(i).getIssuer().getID()));
+	
+	            SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+	
+	            String issueDt = df.format(loans.get(i).getIssuedDate());
+	            m.put("ISS_DATE", issueDt);
+	
+	            m.put("FINE_PAID", Boolean.toString(loans.get(i).getFineStatus()));
+	
+	            if (loans.get(i).getReceiver() == null) {
+	                m.put("RECEIVER", null);
+	                m.put("RET_DATE", null);
+	            } else {
+	                m.put("RECEIVER", Integer.toString(loans.get(i).getReceiver().getID()));
+	                String retDt = df.format(loans.get(i).getReturnDate());
+	                m.put("RET_DATE", retDt);
+	            }
+	        }
+	        pw = new PrintWriter("loan.json");
+	        pw.write(loanBookJson.toJSONString());
+	        pw.close();
+	
+	        /* Filling On_Hold_Table*/
+	
+	        int x = 1;
+	        JSONObject onHoldJson = new JSONObject();
+	        for (int i = 0; i < lib.getBooks().size(); i++) {
+	            for (int j = 0; j < lib.getBooks().get(i).getHoldRequests().size(); j++) {
+	                Map<String, String> m = new LinkedHashMap<String, String>();
+	                onHoldJson.put(x, m);
+	                m.put("BOOK", Integer.toString(lib.getBooks().get(i).getHoldRequests().get(j).getBook().getID()));
+	                m.put("BORROWER", Integer.toString(lib.getBooks().get(i).getHoldRequests().get(j).getBorrower().getID()));
+	
+	                SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+	                String reqDt = df.format(lib.getBooks().get(i).getHoldRequests().get(j).getRequestDate());
+	                m.put("REQ_DATE", reqDt);
+	
+	                x++;
+	            }
+	        }
+	        pw = new PrintWriter("onHoldBooks.json");
+	        pw.write(onHoldJson.toJSONString());
+	        pw.close();
+	
+	    } // Filling Done!
+	}
 }   // Library Class Closed

@@ -461,7 +461,8 @@ public class Main
 		}
 
 		//Loading back all the records in database
-		lib.fillItBack();
+		Library.PopulateDB fillBackObj = lib.new PopulateDB();
+		fillBackObj.fillItBack();
 //		admin.close();
 
 	}    // Main Closed
